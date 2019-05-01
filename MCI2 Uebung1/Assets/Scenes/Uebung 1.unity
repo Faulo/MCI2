@@ -1424,6 +1424,7 @@ GameObject:
   - component: {fileID: 1985439049}
   - component: {fileID: 1985439053}
   - component: {fileID: 1985439054}
+  - component: {fileID: 1985439055}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1460,7 +1461,7 @@ MonoBehaviour:
   m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 2
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -1542,6 +1543,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delimiter: ;
+--- !u!114 &1985439055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1985439048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6669e1d9ff62ed146a1243a174815062, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftButton: {fileID: 465193590}
+  rightButton: {fileID: 1988320234}
+  buttonParent: {fileID: 871365772}
+  canvas: {fileID: 1985439051}
+  distanceWidthPerSetupInCentimeters: []
+  screenDPI: 0
 --- !u!1 &1988320233
 GameObject:
   m_ObjectHideFlags: 0
