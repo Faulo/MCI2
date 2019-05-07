@@ -1,17 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; 
+using UnityEngine.UI;
+using TMPro;
 
 public class TestManager : MonoBehaviour
 {
-
-	public float distanceMM;
-	public float widthMM;
-	//public int retrysPerSetup;
-	//public test definition;
-
-	public InputField nameField;
+	public TMP_InputField nameField;
 	public Button leftButton;
 	public Button rightButton;
 		
@@ -22,10 +17,14 @@ public class TestManager : MonoBehaviour
 	private float timeStampLastHit;
 	private CSVLogger logger;
 	private bool firstHit = true;
-	
-	
+
+	private float width;
+	private float distance;
+	private float difficulty;
+
+
 	// Start is called before the first frame update
-    void Start()
+	void Start()
     {
 		ToggleButton();
 		logger = gameObject.GetComponent<CSVLogger>();
@@ -91,7 +90,7 @@ public class TestManager : MonoBehaviour
 		Debug.Log(errorRate + " | " + hits.Count);
 		errorRate = 1 - (errorRate / hits.Count);
 		Debug.Log("Time Average: " + averageTime + " | error Rate: " + errorRate);
-		logger.LogToCSV(0, 0, averageTime, errorRate, hits.Count, "testName", Time.time);
+		logger.LogToCSV(distance, width, difficulty, averageTime, errorRate, hits.Count, nameField.text, System.DateTime.Now);
 		ResetTest();
 	}
 
@@ -161,7 +160,14 @@ public class TestManager : MonoBehaviour
 		times.Add(Time.time - timeStampLastHit);
 	}
 	
+	public void SetNewSetup(float d, float w)
+	{
+		EndTest();
 
+		distance = d;
+		width = w;
+		difficulty = Mathf.Log((2 * distance) / width, 2); //log2((2xDistance) / Width);
+	}
 
 	/*
 	 * TODO: 
