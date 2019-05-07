@@ -9,7 +9,8 @@ public class TestManager : MonoBehaviour
 	public TMP_InputField nameField;
 	public Button leftButton;
 	public Button rightButton;
-		
+	public float timeForEachSetup;
+
 	private float mmToPixel;
 	private List<float> times = new List<float>();
 	private List<bool> hits = new List<bool>();
@@ -22,12 +23,15 @@ public class TestManager : MonoBehaviour
 	private float distance;
 	private float difficulty;
 
+	private SetupManager sM;
+
 
 	// Start is called before the first frame update
 	void Start()
     {
 		ToggleButton();
 		logger = gameObject.GetComponent<CSVLogger>();
+		sM = gameObject.GetComponent<SetupManager>();
     }
 
     // Update is called once per frame
@@ -139,6 +143,7 @@ public class TestManager : MonoBehaviour
 		{
 			firstHit = false;
 			timeStampLastHit = Time.time;
+			StartCoroutine(TimeLimit());
 			return;
 		}
 		Debug.Log(timeStampLastHit - Time.time);
@@ -167,6 +172,12 @@ public class TestManager : MonoBehaviour
 		distance = d;
 		width = w;
 		difficulty = Mathf.Log((2 * distance) / width, 2); //log2((2xDistance) / Width);
+	}
+
+	IEnumerator TimeLimit()
+	{
+		yield return new WaitForSeconds(timeForEachSetup);
+		sM.NextSetup();
 	}
 
 	/*

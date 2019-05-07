@@ -14,12 +14,12 @@ public class SetupManager : MonoBehaviour
 	public GameObject transitionScreen;
 	public TextMeshProUGUI transitionText;
 
-	public Vector2Int[] distanceWidthPerSetupInPixels;
-	public float timeForEachSetup;
+	public Vector2[] distanceWidthPerSetupInMM;
 
 	public float transitionTime;
-	//public float screenDPI;
+	public float screenDPI;
 
+	private Vector2Int[] distanceWidthPerSetupInPixels;
 	private int currentSetupIndex;
 	private int totalWidthPixel;
 	private TestManager tM;
@@ -71,12 +71,14 @@ public class SetupManager : MonoBehaviour
 	/// </summary>
 	private void SetNewSetup()
 	{
-		tM.SetNewSetup(distanceWidthPerSetupInPixels[currentSetupIndex].x, distanceWidthPerSetupInPixels[currentSetupIndex].y);
+		ReCalcPixels();
+
+		tM.SetNewSetup(distanceWidthPerSetupInMM[currentSetupIndex].x, distanceWidthPerSetupInMM[currentSetupIndex].y);
 
 		leftButton.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, distanceWidthPerSetupInPixels[currentSetupIndex].y);
 		rightButton.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, distanceWidthPerSetupInPixels[currentSetupIndex].y);
 		
-		int distanceAnchorToAnchor = distanceWidthPerSetupInPixels[currentSetupIndex].x + (2 * distanceWidthPerSetupInPixels[currentSetupIndex].y);
+		int distanceAnchorToAnchor = distanceWidthPerSetupInPixels[currentSetupIndex].x + (distanceWidthPerSetupInPixels[currentSetupIndex].y);
 		int offsetFromEdge = (totalWidthPixel - distanceAnchorToAnchor) / 2;
 		Vector3 leftPos = leftButton.anchoredPosition3D;
 		Vector3 rightPos = rightButton.anchoredPosition3D;
@@ -87,21 +89,16 @@ public class SetupManager : MonoBehaviour
 		rightButton.anchoredPosition3D = rightPos;
 	}
 
-	private void ShowEnd ()
+	private void ReCalcPixels()
 	{
-
-	}
-
-	private void HideEnd ()
-	{
-
-	}
-
-	IEnumerator TimeLimit()
-	{
-		yield return new WaitForSeconds(timeForEachSetup);
-		NextSetup();
-
+		distanceWidthPerSetupInPixels = new Vector2Int[distanceWidthPerSetupInMM.Length];
+		for (int i = 0; i < distanceWidthPerSetupInMM.Length; i++)
+		{
+			Vector2Int tmp = new Vector2Int((int) (distanceWidthPerSetupInMM[i].x * (screenDPI / 2.54f / 10))
+				, (int)(distanceWidthPerSetupInMM[i].y * (screenDPI / 2.54f / 10)));
+			Debug.Log(tmp);
+			distanceWidthPerSetupInPixels[i] = tmp;
+		}
 	}
 
 	IEnumerator TransitionTimer()
