@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class SetupManager : MonoBehaviour
 {
@@ -14,12 +15,12 @@ public class SetupManager : MonoBehaviour
 	public GameObject transitionScreen;
 	public TextMeshProUGUI transitionText;
 
-	public Vector2[] distanceWidthPerSetupInMM;
+	public GlobalTestSetup globalSetupInMM;
 
 	public float transitionTime;
 	public float screenDPI;
 
-	private Vector2Int[] distanceWidthPerSetupInPixels;
+	private IEnumerable<TestSetup> setupsInMM;
 	private int currentSetupIndex;
 	private int totalWidthPixel;
 	private TestManager tM;
@@ -47,9 +48,9 @@ public class SetupManager : MonoBehaviour
 	{
 		currentSetupIndex++;
 		transitionText.text = "Beginne den nächsten Test wenn du bereit bist.";
-		if (currentSetupIndex == distanceWidthPerSetupInPixels.Length)
+		if (currentSetupIndex == setupsInMM.Count())
 		{
-			currentSetupIndex = 0;
+            currentSetupIndex = 0;
 
 			transitionText.text = "Das waren alle Tests.";
 		}
@@ -73,13 +74,16 @@ public class SetupManager : MonoBehaviour
 	{
 		ReCalcPixels();
 
-		tM.SetNewSetup(distanceWidthPerSetupInMM[currentSetupIndex].x, distanceWidthPerSetupInMM[currentSetupIndex].y);
+        var setupInMM = setupsInMM.ElementAt(currentSetupIndex);
+        var setupInPixel = setupInMM.InPixel(screenDPI);
+        
+		tM.SetNewSetup(setupInMM.distance, setupInMM.width);
 
-		leftButton.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, distanceWidthPerSetupInPixels[currentSetupIndex].y);
-		rightButton.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, distanceWidthPerSetupInPixels[currentSetupIndex].y);
+		leftButton.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, setupInPixel.width);
+		rightButton.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, setupInPixel.width);
 		
-		int distanceAnchorToAnchor = distanceWidthPerSetupInPixels[currentSetupIndex].x + (distanceWidthPerSetupInPixels[currentSetupIndex].y);
-		int offsetFromEdge = (totalWidthPixel - distanceAnchorToAnchor) / 2;
+		float distanceAnchorToAnchor = setupInPixel.distance + setupInPixel.width;
+        float offsetFromEdge = (totalWidthPixel - distanceAnchorToAnchor) / 2;
 		Vector3 leftPos = leftButton.anchoredPosition3D;
 		Vector3 rightPos = rightButton.anchoredPosition3D;
 
@@ -91,14 +95,8 @@ public class SetupManager : MonoBehaviour
 
 	private void ReCalcPixels()
 	{
-		distanceWidthPerSetupInPixels = new Vector2Int[distanceWidthPerSetupInMM.Length];
-		for (int i = 0; i < distanceWidthPerSetupInMM.Length; i++)
-		{
-			Vector2Int tmp = new Vector2Int((int) (distanceWidthPerSetupInMM[i].x * (screenDPI / 2.54f / 10))
-				, (int)(distanceWidthPerSetupInMM[i].y * (screenDPI / 2.54f / 10)));
-			Debug.Log(tmp);
-			distanceWidthPerSetupInPixels[i] = tmp;
-		}
+        setupsInMM = globalSetupInMM.GetTestSetups();
+        Debug.Log(setupsInMM);
 	}
 
 	IEnumerator TransitionTimer()

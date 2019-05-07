@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using UnityEngine;
+
+[Serializable]
+public struct GlobalTestSetup {
+    public float[] distances;
+    public float[] difficulties;
+
+    internal IEnumerable<TestSetup> GetTestSetups() {
+        var self = this;
+        return distances
+            .SelectMany(distance => self.difficulties
+                .Select(difficulty => new TestSetup(distance, 2*distance / Mathf.Pow(2, difficulty)))
+            );
+    }
+}

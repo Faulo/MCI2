@@ -94,7 +94,7 @@ public class TestManager : MonoBehaviour
 		Debug.Log(errorRate + " | " + hits.Count);
 		errorRate = 1 - (errorRate / hits.Count);
 		Debug.Log("Time Average: " + averageTime + " | error Rate: " + errorRate);
-		logger.LogToCSV(distance, width, difficulty, averageTime, errorRate, hits.Count, nameField.text, System.DateTime.Now);
+		logger.LogToCSV(width, distance, difficulty, averageTime, errorRate, hits.Count, nameField.text, System.DateTime.Now);
 		ResetTest();
 	}
 
@@ -168,11 +168,12 @@ public class TestManager : MonoBehaviour
 	public void SetNewSetup(float d, float w)
 	{
 		EndTest();
+        StopAllCoroutines();
 
-		distance = d;
+        distance = d;
 		width = w;
 		difficulty = Mathf.Log((2 * distance) / width, 2); //log2((2xDistance) / Width);
-	}
+    }
 
 	IEnumerator TimeLimit()
 	{
