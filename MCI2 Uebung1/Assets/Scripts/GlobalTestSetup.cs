@@ -14,7 +14,7 @@ public struct GlobalTestSetup {
         var self = this;
         return distances
             .SelectMany(distance => self.difficulties
-                .Select(difficulty => new TestSetup(distance, 2*distance / Mathf.Pow(2, difficulty)))
+                .Select(difficulty => new TestSetup(distance:distance, difficulty:difficulty))
             );
     }
 }

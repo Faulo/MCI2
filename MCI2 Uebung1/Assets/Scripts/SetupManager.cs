@@ -77,7 +77,7 @@ public class SetupManager : MonoBehaviour
         var setupInMM = setupsInMM.ElementAt(currentSetupIndex);
         var setupInPixel = setupInMM.InPixel(screenDPI);
         
-		tM.SetNewSetup(setupInMM.distance, setupInMM.width);
+		tM.SetNewSetup(setupInMM);
 
 		leftButton.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, setupInPixel.width);
 		rightButton.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, setupInPixel.width);

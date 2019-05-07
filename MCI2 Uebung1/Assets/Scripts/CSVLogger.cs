@@ -27,9 +27,18 @@ public class CSVLogger : MonoBehaviour
 		WriteLineToCSV(headRow);
 	}
 
-	public void LogToCSV (float width, float distance, float difficulty, float aTime, float errorRate, int testSize, string name, DateTime time)
+	public void LogToCSV (TestSetup setup, TestResult result)
 	{
-		string[] lineData = {width.ToString(), distance.ToString(), difficulty.ToString(), aTime.ToString(), errorRate.ToString(), testSize.ToString(), name, time.ToLongTimeString() };
+		string[] lineData = {
+            setup.width.ToString(),
+            setup.distance.ToString(),
+            setup.difficulty.ToString(),
+            result.averageTime.ToString(),
+            result.errorRate.ToString(),
+            result.testSize.ToString(),
+            result.name,
+            result.date.ToLongTimeString()
+        };
 		WriteLineToCSV(lineData);
 	}
 

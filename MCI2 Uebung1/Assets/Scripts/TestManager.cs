@@ -11,25 +11,18 @@ public class TestManager : MonoBehaviour
 	public Button rightButton;
 	public float timeForEachSetup;
 
-	private float mmToPixel;
-	private List<float> times = new List<float>();
-	private List<bool> hits = new List<bool>();
-	private bool hitLeft;
-	private float timeStampLastHit;
-	private CSVLogger logger;
-	private bool firstHit = true;
+    private CSVLogger logger;
+    private TestSetup setup;
+    private TestResult result;
+    private SetupManager sM;
 
-	private float width;
-	private float distance;
-	private float difficulty;
-
-	private SetupManager sM;
-
+    private bool hitLeft;
+    private float timeStampLastHit;
 
 	// Start is called before the first frame update
 	void Start()
     {
-		ToggleButton();
+        ToggleButton();
 		logger = gameObject.GetComponent<CSVLogger>();
 		sM = gameObject.GetComponent<SetupManager>();
     }
@@ -72,38 +65,19 @@ public class TestManager : MonoBehaviour
 		ToggleButton();
 	}
 
-	public void EndTest ()
+	private void EndTest ()
 	{
-		if (hits.Count == 0)
-		{
-			ResetTest();
-			return;
-		}
-
-		float averageTime = 0;
-		float errorRate = 0;
-		for (int i = 0; i < times.Count; i++)
-		{
-			averageTime += times[i];
-			if (hits[i])
-			{
-				errorRate++;
-			}
-		}
-		averageTime = averageTime / times.Count;
-		Debug.Log(errorRate + " | " + hits.Count);
-		errorRate = 1 - (errorRate / hits.Count);
-		Debug.Log("Time Average: " + averageTime + " | error Rate: " + errorRate);
-		logger.LogToCSV(width, distance, difficulty, averageTime, errorRate, hits.Count, nameField.text, System.DateTime.Now);
+        if (setup != null && result != null) {
+            Debug.Log("Time Average: " + result.averageTime + " | error Rate: " + result.errorRate);
+            logger.LogToCSV(setup, result);
+        }
 		ResetTest();
 	}
 
 	private void ResetTest()
 	{
-		times = new List<float>();
-		hits = new List<bool>();
-		firstHit = true;
-	}
+        result = null;
+    }
 
 	private void ToggleButton()
 	{
@@ -125,7 +99,6 @@ public class TestManager : MonoBehaviour
 
 		leftButton.colors = leftColors;
 		rightButton.colors = rightColors;
-		timeStampLastHit = Time.time;
 	}
 
 	private ColorBlock SetColor (ColorBlock block, Color c)
@@ -136,43 +109,29 @@ public class TestManager : MonoBehaviour
 		return block;
 	}
 
-	private void Hit()
-	{
-		Debug.Log("Hit");
-		if (firstHit)
-		{
-			firstHit = false;
-			timeStampLastHit = Time.time;
-			StartCoroutine(TimeLimit());
-			return;
-		}
-		Debug.Log(timeStampLastHit - Time.time);
-		hits.Add(true);
-		times.Add(Time.time - timeStampLastHit);
+	private void Hit() {
+        Debug.Log("Hit");
+        Record(true);
 	}
-
-	private void Miss()
-	{
-		Debug.Log("Miss");
-		if (firstHit)
-		{
-			firstHit = false;
-			timeStampLastHit = Time.time;
-			return;
-		}
-		Debug.Log(timeStampLastHit - Time.time);
-		hits.Add(false);
-		times.Add(Time.time - timeStampLastHit);
+	private void Miss() {
+        Debug.Log("Miss");
+        Record(false);
 	}
+    private void Record(bool hit) {
+        if (result == null) {
+            result = new TestResult(nameField.text);
+            StartCoroutine(TimeLimit());
+        } else {
+            result.AddRecord(Time.time - timeStampLastHit, hit);
+        }
+        timeStampLastHit = Time.time;
+    }
 	
-	public void SetNewSetup(float d, float w)
+	public void SetNewSetup(TestSetup setup)
 	{
 		EndTest();
         StopAllCoroutines();
-
-        distance = d;
-		width = w;
-		difficulty = Mathf.Log((2 * distance) / width, 2); //log2((2xDistance) / Width);
+        this.setup = setup;
     }
 
 	IEnumerator TimeLimit()
@@ -180,12 +139,4 @@ public class TestManager : MonoBehaviour
 		yield return new WaitForSeconds(timeForEachSetup);
 		sM.NextSetup();
 	}
-
-	/*
-	 * TODO: 
-	 * Log one csv line per test setup: width + distance + Average Time to switch + Error rate in % +  Tester name
-	 * On miss -> directly switch to next target
-	 * 
-	 * What is the time of the first button press
-	 * */
 }
