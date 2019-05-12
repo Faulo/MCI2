@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using System;
 
 public class SetupManager : MonoBehaviour
 {
@@ -14,13 +15,18 @@ public class SetupManager : MonoBehaviour
 
 	public GameObject transitionScreen;
 	public TextMeshProUGUI transitionText;
+    public TextMeshProUGUI progressText;
 
-	public GlobalTestSetup globalSetupInMM;
+    public GlobalTestSetup globalSetupInMM;
 
 	public float transitionTime;
-	public float screenDPI;
+    private float screenDPI;
 
-	private IEnumerable<TestSetup> setupsInMM;
+    public int screenInPixel;
+    public float screenInMM;
+    const float INCHES_TO_MILLIMETER = 25.4f;
+
+    private IEnumerable<TestSetup> setupsInMM;
 	private int currentSetupIndex;
 	private int totalWidthPixel;
 	private TestManager tM;
@@ -28,6 +34,10 @@ public class SetupManager : MonoBehaviour
 	// Start is called before the first frame update
     void Start()
     {
+        if (screenInPixel > 0 && screenInMM > 0) {
+            screenDPI = screenInPixel * INCHES_TO_MILLIMETER / screenInMM;
+            Debug.Log("Calculated DPI to be " + screenDPI);
+        }
 		tM = gameObject.GetComponent<TestManager>();
 		transitionScreen.SetActive(false);
 		RestartAll();
@@ -74,6 +84,8 @@ public class SetupManager : MonoBehaviour
 	{
 		ReCalcPixels();
 
+        progressText.text = string.Format("This is test {0}/{1}", currentSetupIndex+1, setupsInMM.Count());
+
         var setupInMM = setupsInMM.ElementAt(currentSetupIndex);
         var setupInPixel = setupInMM.InPixel(screenDPI);
         
@@ -96,7 +108,6 @@ public class SetupManager : MonoBehaviour
 	private void ReCalcPixels()
 	{
         setupsInMM = globalSetupInMM.GetTestSetups();
-        Debug.Log(setupsInMM);
 	}
 
 	IEnumerator TransitionTimer()

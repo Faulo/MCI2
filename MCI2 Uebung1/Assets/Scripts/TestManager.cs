@@ -4,10 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class TestManager : MonoBehaviour
-{
-	public TMP_InputField nameField;
-	public Button leftButton;
+public class TestManager : MonoBehaviour {
+    public TMP_InputField nameField;
+    public Button leftButton;
 	public Button rightButton;
 	public float timeForEachSetup;
 
@@ -110,11 +109,11 @@ public class TestManager : MonoBehaviour
 	}
 
 	private void Hit() {
-        Debug.Log("Hit");
+        //Debug.Log("Hit");
         Record(true);
 	}
 	private void Miss() {
-        Debug.Log("Miss");
+        //Debug.Log("Miss");
         Record(false);
 	}
     private void Record(bool hit) {
