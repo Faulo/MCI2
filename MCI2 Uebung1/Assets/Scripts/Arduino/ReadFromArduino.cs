@@ -30,6 +30,7 @@ public class ReadFromArduino : MonoBehaviour
 		serialPort.StopBits = StopBits.One;*/
 		//serialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
 		serialPort.Open();
+		//StartCoroutine(Read());
 	}
 
 	// Update is called once per frame
@@ -37,7 +38,7 @@ public class ReadFromArduino : MonoBehaviour
     {
 
 		//Debug.Log(serialPort.ReadExisting());
-		
+
 		//do
 		//{
 		/*string lastValue = serialPort.ReadLine();
@@ -50,6 +51,7 @@ public class ReadFromArduino : MonoBehaviour
 		}*/
 		//} while ()
 		int.TryParse(serialPort.ReadLine(), out xValueCurrent);
+		//xValueCurrent = serialPort.ReadChar();
 		Debug.Log(xValueCurrent);
 		testObject.transform.position = new Vector3(xValueCurrent * 0.1f, 0, 0);
     }
@@ -57,6 +59,16 @@ public class ReadFromArduino : MonoBehaviour
 	private void OnApplicationQuit()
 	{
 		serialPort.Close();
+	}
+
+	IEnumerator Read()
+	{
+		while (true)
+		{
+			yield return null;
+			int.TryParse(serialPort.ReadLine(), out xValueCurrent);
+			Debug.Log(xValueCurrent);
+		}
 	}
 
 	/*private static void DataReceivedHandler(

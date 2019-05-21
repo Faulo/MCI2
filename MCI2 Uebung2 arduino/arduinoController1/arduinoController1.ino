@@ -21,8 +21,8 @@ void loop() {
   //Serial.print("test \n");
 
   //sensorValue = analogRead(sensorPin);
-  delay(10);                           // 20 ist gut; 10 ist zu schnell; 
-  Serial.print(analogRead(xInputPin));
+  delay(50);                           // 20 ist gut; 10 ist zu schnell; 
+  Serial.print(analogRead(xInputPin), DEC);
   Serial.println();
   //Serial.print(analogRead(yInputPin));
   /*if (analogRead(xInputPin) > 540) {
