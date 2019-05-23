@@ -8,6 +8,13 @@ using System;
 
 public class SetupManager : MonoBehaviour
 {
+	public bool testActive
+	{
+		get
+		{
+			return !transitionScreen.activeSelf;
+		}
+	}
 	public RectTransform leftButton;
 	public RectTransform rightButton;
 	public RectTransform buttonParent;

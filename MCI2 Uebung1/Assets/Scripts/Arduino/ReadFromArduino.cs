@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO.Ports;
-using System.Text;
+using UnityEngine.UI;
 
 public class ReadFromArduino : MonoBehaviour
 {
-	public GameObject testObject;
+	public AnimationCurve deadZone;
 
 	private SerialPort serialPort;
-	private int xValueCurrent;
+	
+
 	
 	
 	// Start is called before the first frame update
@@ -24,37 +25,42 @@ public class ReadFromArduino : MonoBehaviour
 
 		serialPort = new SerialPort();
 		serialPort.PortName = "COM7";
-		/*serialPort.Parity = Parity.None;
+		serialPort.Parity = Parity.None;
 		serialPort.BaudRate = 115200;
 		serialPort.DataBits = 8;
-		serialPort.StopBits = StopBits.One;*/
+		serialPort.StopBits = StopBits.One;
 		//serialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
 		serialPort.Open();
 		//StartCoroutine(Read());
+		
+
 	}
 
 	// Update is called once per frame
 	void Update()
     {
-
-		//Debug.Log(serialPort.ReadExisting());
-
-		//do
-		//{
-		/*string lastValue = serialPort.ReadLine();
-		if (lastValue != null)
+		//int.TryParse(serialPort.ReadLine(), out xValueCurrent);
+		int byteSize = 4;
+		double inputSum = 0;
+		int inputCount = 0;
+		while (serialPort.BytesToRead > byteSize)
 		{
-			Debug.Log(lastValue);
-		} else
+			var byteValue = serialPort.ReadLine();
+			if (byteValue.Length == byteSize && int.TryParse(byteValue, out int inputValue))
+			{
+				inputSum += inputValue;
+				inputCount++;
+			}
+		}
+		if (inputCount > 0)
 		{
-			Debug.Log("no new vaules");
-		}*/
-		//} while ()
-		int.TryParse(serialPort.ReadLine(), out xValueCurrent);
-		//xValueCurrent = serialPort.ReadChar();
-		Debug.Log(xValueCurrent);
-		testObject.transform.position = new Vector3(xValueCurrent * 0.1f, 0, 0);
-    }
+			//Debug.Log(inputSum / inputCount);
+			float scaledDeadInput = deadZone.Evaluate((float)inputSum / inputCount);
+			//Debug.Log(scaledDeadInput);
+
+			gameObject.GetComponent<RectTransform>().position = new Vector3(scaledDeadInput * Screen.width, Screen.height * 0.5f, 0);
+		}
+	}
 
 	private void OnApplicationQuit()
 	{
@@ -66,16 +72,18 @@ public class ReadFromArduino : MonoBehaviour
 		while (true)
 		{
 			yield return null;
-			int.TryParse(serialPort.ReadLine(), out xValueCurrent);
-			Debug.Log(xValueCurrent);
+			Debug.Log(serialPort.BytesToRead);
+			//int.TryParse(serialPort.ReadLine(), out xValueCurrent);
+			//Debug.Log(xValueCurrent);
 		}
 	}
 
-	/*private static void DataReceivedHandler(
+	/*private void DataReceivedHandler(
 							object sender,
 							SerialDataReceivedEventArgs e)
 	{
-		SerialPort port = (SerialPort)sender;
+		Debug.Log(serialPort.BytesToRead);
+		/*SerialPort port = (SerialPort)sender;
 		byte[] data = new byte[port.BytesToRead];
 		port.Read(data, 0, data.Length);
 		string s = Encoding.GetEncoding("Windows-1252").GetString(data);

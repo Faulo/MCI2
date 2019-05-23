@@ -24,13 +24,21 @@ public class TestManager : MonoBehaviour {
         ToggleButton();
 		logger = gameObject.GetComponent<CSVLogger>();
 		sM = gameObject.GetComponent<SetupManager>();
+		//InvokeRepeating("click",1,1);
     }
+
+	private void click()
+	{
+		leftButton.onClick.Invoke();
+	}
 
     // Update is called once per frame
     void Update()
     {
-        
+		
     }
+
+	
 
 	public void LeftHit()
 	{

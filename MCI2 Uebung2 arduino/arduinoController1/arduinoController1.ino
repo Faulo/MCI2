@@ -1,5 +1,6 @@
 int xInputPin = A0;
 int yInputPin = A1;
+int xCalibrationZero = 512;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
@@ -9,6 +10,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(115200);
   //pinMode(switchPin, INPUT); 
+  
 }
 
 // the loop function runs over and over again forever
@@ -21,13 +23,10 @@ void loop() {
   //Serial.print("test \n");
 
   //sensorValue = analogRead(sensorPin);
-  delay(50);                           // 20 ist gut; 10 ist zu schnell; 
-  Serial.print(analogRead(xInputPin), DEC);
-  Serial.println();
-  //Serial.print(analogRead(yInputPin));
-  /*if (analogRead(xInputPin) > 540) {
-    Serial.print(1,DEC);
-  }else {
-    Serial.print(2,DEC);
-  }*/
+  //delay(0);                           // 20 ist gut; 10 ist zu schnell; 
+  char buf[4];
+  sprintf(buf, "%04d", analogRead(xInputPin));
+  //Serial.print(buf);
+  Serial.println(buf);
+
 }
