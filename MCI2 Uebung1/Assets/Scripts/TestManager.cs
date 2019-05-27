@@ -42,7 +42,9 @@ public class TestManager : MonoBehaviour {
 
 	public void LeftHit()
 	{
-		if (hitLeft)
+        Debug.Log("LeftHit!");
+
+        if (hitLeft)
 		{
 			Hit();		
 		}
@@ -53,9 +55,10 @@ public class TestManager : MonoBehaviour {
 		ToggleButton();
 	}
 
-	public void RightHit()
-	{
-		if (hitLeft)
+	public void RightHit() {
+        Debug.Log("RightHit!");
+
+        if (hitLeft)
 		{
 			Miss();
 		}
@@ -66,9 +69,10 @@ public class TestManager : MonoBehaviour {
 		ToggleButton();
 	}
 
-	public void BackgroundHit()
-	{
-		Miss();
+	public void BackgroundHit() {
+        Debug.Log("BackgroundHit!");
+
+        Miss();
 		ToggleButton();
 	}
 

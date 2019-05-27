@@ -3,28 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO.Ports;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 public class ReadFromArduino : MonoBehaviour
 {
 	public AnimationCurve deadZone;
 
 	private SerialPort serialPort;
-	
 
-	
-	
-	// Start is called before the first frame update
+    private int packageSize = 4;
+    private Regex packageFormat = new Regex("^[0-9]{4}$");
+
+
+    // Start is called before the first frame update
     void Start()
     {
 		string[] ports = SerialPort.GetPortNames();
 
-		foreach (var port in ports)
-		{
-			Debug.Log(port);
-		}
+        if (ports.Length == 0) {
+            throw new System.Exception("no COM ports found?!");
+        }
 
 		serialPort = new SerialPort();
-		serialPort.PortName = "COM7";
+		serialPort.PortName = ports[0];
 		serialPort.Parity = Parity.None;
 		serialPort.BaudRate = 115200;
 		serialPort.DataBits = 8;
@@ -32,23 +33,19 @@ public class ReadFromArduino : MonoBehaviour
 		//serialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
 		serialPort.Open();
 		//StartCoroutine(Read());
-		
-
 	}
 
 	// Update is called once per frame
 	void Update()
     {
 		//int.TryParse(serialPort.ReadLine(), out xValueCurrent);
-		int byteSize = 4;
 		double inputSum = 0;
 		int inputCount = 0;
-		while (serialPort.BytesToRead > byteSize)
+		while (serialPort.BytesToRead > packageSize)
 		{
 			var byteValue = serialPort.ReadLine();
-			if (byteValue.Length == byteSize && int.TryParse(byteValue, out int inputValue))
-			{
-				inputSum += inputValue;
+			if (packageFormat.IsMatch(byteValue)) {
+				inputSum += int.Parse(byteValue);
 				inputCount++;
 			}
 		}

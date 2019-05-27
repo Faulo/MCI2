@@ -30,7 +30,8 @@ public class CursorSimulator : MonoBehaviour
 			var rightWidth = rightButton.GetComponent<RectTransform>().rect.width;
 			var rightX = Screen.width + rightButton.GetComponent<RectTransform>().anchoredPosition.x - rightWidth;
 
-			if (x > leftX && x < leftX + leftWidth)
+            //Debug.Log("x:" + x + " lextX:" + leftX + " leftWidth:" + leftWidth + " rightX:" + rightX + " rightWidth:" + rightWidth);
+            if (x > leftX && x < leftX + leftWidth)
 			{
 				leftButton.onClick.Invoke();
 			} else if (x > rightX && x < rightX + rightWidth)
