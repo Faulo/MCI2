@@ -2535,7 +2535,7 @@ MonoBehaviour:
   transitionText: {fileID: 1616173076}
   progressText: {fileID: 931034478}
   globalSetupInMM:
-    startCursor: 0
+    startCursor: 2
     distances:
     - 50
     - 100
