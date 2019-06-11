@@ -20,7 +20,8 @@ public class TestResult {
         }
     }
     public string name { get; private set; }
-    public DateTime date { get {
+    public DateTime date {
+        get {
             return DateTime.Now;
         }
     }

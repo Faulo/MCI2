@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Extensions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ public struct GlobalTestSetup {
         return distances
             .SelectMany(distance => self.difficulties
                 .Select(difficulty => new TestSetup(distance:distance, difficulty:difficulty))
-            );
+            )
+            .Shuffle();
     }
 }
