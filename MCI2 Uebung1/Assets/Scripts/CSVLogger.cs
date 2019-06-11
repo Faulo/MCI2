@@ -23,13 +23,14 @@ public class CSVLogger : MonoBehaviour
 		string filePath = Application.dataPath + "/Resources/" + "TestSession.csv"; // + DateTime.Now.ToShortTimeString() + ".csv"
 		//File.CreateText(filePath );
 		tsw = new StreamWriter(filePath);
-		string[] headRow = { "Width", "Distance" , "Difficulty", "Average Time", "Error Rate", "Clicks", "Tester", "Time Stamp"};
+		string[] headRow = { "Control Type", "Width", "Distance" , "Difficulty", "Average Time", "Error Rate", "Clicks", "Tester", "Time Stamp"};
 		WriteLineToCSV(headRow);
 	}
 
 	public void LogToCSV (TestSetup setup, TestResult result)
 	{
 		string[] lineData = {
+            result.cursor.ToString(),
             setup.width.ToString(),
             setup.distance.ToString(),
             setup.difficulty.ToString(),

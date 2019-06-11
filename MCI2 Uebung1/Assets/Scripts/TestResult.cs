@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Cursors;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class TestResult {
+    public CursorMovementType cursor;
+
     public float averageTime {
         get {
             return testSize > 0

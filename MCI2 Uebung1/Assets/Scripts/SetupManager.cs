@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Linq;
 using System;
+using Cursors;
 
 public class SetupManager : MonoBehaviour
 {
@@ -37,8 +38,9 @@ public class SetupManager : MonoBehaviour
 	private int currentSetupIndex;
 	private int totalWidthPixel;
 	private TestManager tM;
+    public AbstractCursorMovement cursor { get; private set; }
 
-	// Start is called before the first frame update
+    // Start is called before the first frame update
     void Start()
     {
         if (screenInPixel > 0 && screenInMM > 0) {
@@ -63,14 +65,17 @@ public class SetupManager : MonoBehaviour
 
 	public void NextSetup()
 	{
+        cursor.Reset();
 		currentSetupIndex++;
 		transitionText.text = "Beginne den nächsten Test wenn du bereit bist.";
 		if (currentSetupIndex == setupsInMM.Count())
 		{
             currentSetupIndex = 0;
 
-			transitionText.text = "Das waren alle Tests.";
-		}
+            globalSetupInMM.startCursor = (CursorMovementType)((int)(globalSetupInMM.startCursor + 1) % Enum.GetNames(typeof(CursorMovementType)).Length);
+
+            transitionText.text = "Das waren alle Tests.\nEs folgt: " + globalSetupInMM.startCursor.ToString();
+        }
 		transitionScreen.SetActive(true);
 		SetNewSetup();
 		StartCoroutine(TransitionTimer());
@@ -115,7 +120,9 @@ public class SetupManager : MonoBehaviour
 	private void ReCalcPixels()
 	{
         setupsInMM = globalSetupInMM.GetTestSetups();
-	}
+        cursor = globalSetupInMM.startCursor.Movement();
+        cursor.Reset();
+    }
 
 	IEnumerator TransitionTimer()
 	{

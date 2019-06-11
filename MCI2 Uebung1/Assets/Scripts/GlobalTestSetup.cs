@@ -1,4 +1,5 @@
-﻿using Extensions;
+﻿using Cursors;
+using Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using UnityEngine;
 
 [Serializable]
 public struct GlobalTestSetup {
+    public CursorMovementType startCursor;
     public float[] distances;
     public float[] difficulties;
 

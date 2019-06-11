@@ -8,7 +8,8 @@ public class TestManager : MonoBehaviour {
     public TMP_InputField nameField;
     public Button leftButton;
 	public Button rightButton;
-	public float timeForEachSetup;
+    public float timeForEachSetup;
+    public int hitsForEachSetup;
 
     private CSVLogger logger;
     private TestSetup setup;
@@ -17,9 +18,10 @@ public class TestManager : MonoBehaviour {
 
     private bool hitLeft;
     private float timeStampLastHit;
+    private int hitCount;
 
-	// Start is called before the first frame update
-	void Start()
+    // Start is called before the first frame update
+    void Start()
     {
         ToggleButton();
 		logger = gameObject.GetComponent<CSVLogger>();
@@ -130,10 +132,20 @@ public class TestManager : MonoBehaviour {
 	}
     private void Record(bool hit) {
         if (result == null) {
-            result = new TestResult(nameField.text);
-            StartCoroutine(TimeLimit());
+            if (hit) {
+                result = new TestResult(nameField.text);
+                result.cursor = sM.globalSetupInMM.startCursor;
+                //StartCoroutine(TimeLimit());
+                hitCount = 0;
+            } else {
+                ToggleButton();
+            }
         } else {
             result.AddRecord(Time.time - timeStampLastHit, hit);
+            hitCount++;
+            if (hitCount >= hitsForEachSetup) {
+                FinishTest();
+            }
         }
         timeStampLastHit = Time.time;
     }
@@ -148,6 +160,10 @@ public class TestManager : MonoBehaviour {
 	IEnumerator TimeLimit()
 	{
 		yield return new WaitForSeconds(timeForEachSetup);
-		sM.NextSetup();
-	}
+        FinishTest();
+    }
+
+    private void FinishTest() {
+        sM.NextSetup();
+    }
 }

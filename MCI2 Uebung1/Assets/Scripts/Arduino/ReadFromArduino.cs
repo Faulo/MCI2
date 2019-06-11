@@ -4,6 +4,8 @@ using UnityEngine;
 using System.IO.Ports;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
+using Cursors;
+using Extensions;
 
 public class ReadFromArduino : MonoBehaviour {
     public AnimationCurve deadZone;
@@ -12,6 +14,12 @@ public class ReadFromArduino : MonoBehaviour {
 
     private int packageSize = 4;
     private Regex packageFormat = new Regex("^[0-9]{4}$");
+
+    private AbstractCursorMovement cursor {
+        get {
+            return FindObjectOfType<SetupManager>().cursor;
+        }
+    }
 
 
     // Start is called before the first frame update
@@ -23,7 +31,7 @@ public class ReadFromArduino : MonoBehaviour {
         }
 
         serialPort = new SerialPort {
-            PortName = ports[0],
+            PortName = ports[ports.Length - 1],
             Parity = Parity.None,
             BaudRate = 115200,
             DataBits = 8,
@@ -49,8 +57,8 @@ public class ReadFromArduino : MonoBehaviour {
             //Debug.Log(inputSum / inputCount);
             float scaledInput = deadZone.Evaluate((float)inputSum / inputCount);
             //Debug.Log(scaledDeadInput);
-
-            transform.SetX(scaledInput * Screen.width);
+            cursor.AdvanceBy(scaledInput - 0.5f);
+            transform.SetX(cursor.position * Screen.width);
         }
     }
 
