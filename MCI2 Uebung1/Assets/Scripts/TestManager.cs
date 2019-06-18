@@ -29,7 +29,7 @@ public class TestManager : MonoBehaviour {
 		//InvokeRepeating("click",1,1);
     }
 
-	private void click()
+	private void Click()
 	{
 		leftButton.onClick.Invoke();
 	}
@@ -133,8 +133,9 @@ public class TestManager : MonoBehaviour {
     private void Record(bool hit) {
         if (result == null) {
             if (hit) {
-                result = new TestResult(nameField.text);
-                result.cursor = sM.globalSetupInMM.startCursor;
+                result = new TestResult(nameField.text) {
+                    cursor = sM.globalSetupInMM.startCursor
+                };
                 //StartCoroutine(TimeLimit());
                 hitCount = 0;
             } else {
