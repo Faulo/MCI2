@@ -5,11 +5,15 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
 	public float lifeTime = 5f;
+	public bool permanent = false;
 
     // Start is called before the first frame update
     void Awake()
     {
-		Destroy(gameObject, lifeTime);
+		if (!permanent)
+		{
+			Destroy(gameObject, lifeTime);
+		}
     }
 
     // Update is called once per frame
@@ -17,4 +21,17 @@ public class Bullet : MonoBehaviour
     {
         
     }
+
+	private void OnCollisionEnter(Collision collision)
+	{
+		if (collision.gameObject.GetComponent<Target>())
+		{
+			collision.gameObject.GetComponent<Target>().Hit();
+		}
+
+		if (!permanent)
+		{
+			Destroy(gameObject);
+		}
+	}
 }
