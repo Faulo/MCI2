@@ -18,11 +18,16 @@ public class TurretRotation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		Vector2 input = new Vector2(Input.GetAxis("RightStickX"), Input.GetAxis("RightStickY"));
+		Vector2 input = new Vector2(-Input.GetAxis("RightStickX"), Input.GetAxis("RightStickY"));
+		Vector2 input2 = new Vector2(-Input.GetAxis("Horizontal"), -Input.GetAxis("Vertical"));
+		if (input.magnitude < input2.magnitude)
+		{
+			input = input2;
+		}
 		//horizontalDrive.rotation;
 		if (input.magnitude > 0)
 		{
-			horizontalDrive.forward = new Vector3(-input.normalized.x, 0, input.normalized.y);
+			horizontalDrive.forward = new Vector3(input.normalized.x, 0, input.normalized.y);
 		}
 
 		float verticalAngle = Mathf.Lerp(0, maxVerticalAngle, input.magnitude);

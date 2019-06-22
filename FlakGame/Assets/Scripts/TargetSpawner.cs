@@ -6,6 +6,8 @@ public class TargetSpawner : MonoBehaviour
 {
 	public GameObject targetPrefab;
 	public float[] spawnHeights;
+	public Material[] heightMaterial;
+	public float[] heightScaling;
 	public float spawnIntervall;
 	public Vector2 spawnBoundsTopRight;
 	public Vector2 spawnBoundsBottomLeft;
@@ -60,12 +62,15 @@ public class TargetSpawner : MonoBehaviour
 			{
 				spawnPos.z = spawnBoundsTopRight.y;
 			}
-			spawnPos.z = Random.Range(spawnBoundsBottomLeft.x, spawnBoundsTopRight.x);
+			spawnPos.x = Random.Range(spawnBoundsBottomLeft.x, spawnBoundsTopRight.x);
 		}
+		//Debug.Log(spawnPos);
 
 		var target = Instantiate(targetPrefab);
 		target.transform.position = spawnPos;
 		target.transform.LookAt(new Vector3(Random.Range(spawnBoundsBottomLeft.x, spawnBoundsTopRight.x), spawnPos.y, Random.Range(spawnBoundsBottomLeft.y, spawnBoundsTopRight.y)));
 		target.GetComponent<Rigidbody>().velocity = target.transform.forward * Random.Range(speedRange.x, speedRange.y);
+		target.GetComponent<Renderer>().material = heightMaterial[heightIndex];
+		target.transform.localScale = new Vector3(heightScaling[heightIndex], heightScaling[heightIndex], heightScaling[heightIndex]);
 	}
 }
