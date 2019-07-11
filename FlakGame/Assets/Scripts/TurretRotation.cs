@@ -37,7 +37,7 @@ public class TurretRotation : MonoBehaviour
 				verticalDrive.localRotation = Quaternion.Euler(0, 0, 0);
 			}
 
-			Debug.Log(Quaternion.Euler(0, 0, maxVerticalAngle).z);
+			//Debug.Log(Quaternion.Euler(0, 0, maxVerticalAngle).z);
 			if (verticalDrive.localRotation.z < Quaternion.Euler(0, 0, maxVerticalAngle).z)
 			{
 				verticalDrive.localRotation = Quaternion.Euler(0, 0, maxVerticalAngle);
